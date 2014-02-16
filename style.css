@@ -1,6 +1,8 @@
 body {
 	background-color: goldenrod;
 	font-family: monospace;
+  padding: 0;
+  margin: 0;
 }
 
 a {
@@ -27,5 +29,5 @@ div {
 }
 
 #canvas {
-  border: solid black 1px;
+  background-color: white;
 }
