@@ -29,22 +29,89 @@ function createImage(src) {
 
 var CANVAS;
 var CTX;
-var FILE_WIDTH = 68;
-var FILE_HEIGHT = 88;
-var FILES = createImage("img/files.png");
-var FILES_SELECTED = createImage("img/files_selected.png");
-var FILES_DRAGGING = createImage("img/files_dragging.png");
 var CURSOR = createImage("img/cursor.png");
 var THEN = undefined;
 
-FILE_DRAGGING = false;
-FILE_CURSOR = -1;
-FILE_X = 0;
-FILE_Y = 0;
-FILE_DRAG_X = 0;
-FILE_DRAG_Y = 0;
-FILE_CURSOR_OFF_X = 0;
-FILE_CURSOR_OFF_Y = 0;
+function Cursor() {
+  this.coordinates = [];
+  this.n = 0;
+  this.dragging = false;
+  this.folder;
+
+  this.getXY = function() {
+     if (this.coordinates.length > n) {
+       return undefined;
+     }
+     return this.coordinates[this.n];
+  };
+
+  this.addXY = function(x, y) {
+    this.coordinates[this.n++] = {
+      x: x,
+      y: y
+    };
+  };
+}
+
+// TODO pull out to image.js
+// or canvas. ohh.. damn.
+var FILES = createImage("img/files.png");
+var FILES_SELECTED = createImage("img/files_selected.png");
+var FILES_DRAGGING = createImage("img/files_dragging.png");
+
+function Folder(x, y) {
+  this.WIDTH = 68;
+  this.HEIGHT = 88;
+
+  this.x = x || 0;
+  this.y = y || 0;
+  this.dragX;
+  this.dragY;
+
+  this.dragging = false;
+  this.cursor;
+  this.cursorOffX;
+  this.cursorOffY;
+
+  // TODO: finish Cursor class
+  this.setCursor = function(cursor, x, y) {
+    this.dragging = true;
+    this.cursor = cursor;
+    this.dragX = x;
+    this.dragY = x;
+    this.cursorOffX = x - this.x;
+    this.cursorOffY = y - this.y;
+  };
+
+  this.forgetCursor = function() {
+    this.dragging = false;
+    this.cursor = undefined;
+    this.x = this.dragX - this.cursorOffX;
+    this.y = this.dragY - this.cursorOffY;
+    this.dragX = undefined;
+    this.dragY = undefined;
+    this.dragOffX = undefined;
+    this.dragOffY = undefined;
+  };
+
+  this.draw = function(ctx) {
+    if (!this.dragging) {
+      ctx.drawImage(FILES, this.x, this.y);
+    } else if (RECORDING && this.cursor == CURSORS.length - 1) {
+      ctx.drawImage(FILES_SELECTED, this.x, this.y);
+      this.drawDragging(ctx, MOUSE_X - this.cursorOffX, MOUSE_Y - this.cursorOffY);
+    } else {
+      ctx.drawImage(FILES_SELECTED, this.x, this.y);
+      this.drawDragging(ctx, this.dragX - this.cursorOffX, this.dragY - this.cursorOffY);
+    }
+  };
+
+  this.drawDragging = function(ctx, x, y) {
+    ctx.drawImage(FILES_DRAGGING, x, y);
+  }
+}
+
+var FOLDER = new Folder();
 
 function resize() {
   WIDTH = $(window).width();
@@ -58,10 +125,8 @@ function canvas() {
   CTX = CANVAS.getContext("2d");
   WIDTH = $(window).width();
   HEIGHT = $(window).height() - $("#bar").height();
-  FILE_X = WIDTH / 2 - FILE_WIDTH / 2;
-  FILE_Y = HEIGHT / 2 - FILE_HEIGHT / 2;
-  FILE_X = Math.round(FILE_X);
-  FILE_Y = Math.round(FILE_Y);
+  FOLDER.x = Math.round(WIDTH / 2 - FOLDER.WIDTH / 2);
+  FOLDER.y = Math.round(HEIGHT / 2 - FOLDER.HEIGHT / 2);
 
   CANVAS.width = WIDTH;
   CANVAS.height = HEIGHT;
@@ -80,8 +145,8 @@ function canvas() {
   window.onmouseup = function() {
     MOUSE_DOWN = false;
     stopRecording();
-    if (FILE_DRAGGING && FILE_CURSOR == CURSORS.length - 1) {
-      stopDragging(MOUSE_X, MOUSE_Y);
+    if (FOLDER.dragging && FOLDER.cursor == CURSORS.length - 1) {
+      FOLDER.forgetCursor();
     }
   }
 
@@ -144,23 +209,11 @@ function record() {
 }
 
 function fileClick(x, y) {
-  return (FILE_X < x && x < FILE_X + FILE_WIDTH) &&
-         (FILE_Y < y && y < FILE_Y + FILE_HEIGHT);
+  return (FOLDER.x < x && x < FOLDER.x + FOLDER.WIDTH) &&
+         (FOLDER.y < y && y < FOLDER.y + FOLDER.HEIGHT);
 }
 
 function startDragging(cursor, x, y) {
-  FILE_DRAGGING = true;
-  FILE_CURSOR = cursor;
-  FILE_DRAG_X = x;
-  FILE_DRAG_Y = y;
-  FILE_CURSOR_OFF_X = x - FILE_X;
-  FILE_CURSOR_OFF_Y = y - FILE_Y;
-}
-
-function stopDragging(x, y) {
-  FILE_DRAGGING = false;
-  FILE_X = x - FILE_CURSOR_OFF_X;
-  FILE_Y = y - FILE_CURSOR_OFF_Y;
 }
 
 var TICK = 0;
@@ -168,15 +221,7 @@ function play() {
   TICK++;
   CTX.clearRect(0, 0, WIDTH, HEIGHT);
 
-  if (!FILE_DRAGGING) {
-    CTX.drawImage(FILES, FILE_X, FILE_Y);
-  } else if (RECORDING && FILE_CURSOR == CURSORS.length - 1) {
-    CTX.drawImage(FILES_SELECTED, FILE_X, FILE_Y);
-    CTX.drawImage(FILES_DRAGGING, MOUSE_X - FILE_CURSOR_OFF_X, MOUSE_Y - FILE_CURSOR_OFF_Y);
-  } else {
-    CTX.drawImage(FILES_SELECTED, FILE_X, FILE_Y);
-    CTX.drawImage(FILES_DRAGGING, FILE_DRAG_X - FILE_CURSOR_OFF_X, FILE_DRAG_Y - FILE_CURSOR_OFF_Y);
-  }
+  FOLDER.draw(CTX);
 
   var length = RECORDING ? CURSORS.length - 1 : CURSORS.length;
   for (var i = 0; i < length; i++) {
@@ -212,13 +257,13 @@ function play() {
     }
 
     // cursors can steal? or hand off?
-    if (!FILE_DRAGGING && frame == 0 && fileClick(x, y)) {
-      startDragging(i, x, y);
-    } else if (i == FILE_CURSOR && frame == cursor.length - 1) {
-      stopDragging(x, y);
-    } else if (i == FILE_CURSOR) {
-      FILE_DRAG_X = x;
-      FILE_DRAG_Y = y;
+    if (!FOLDER.dragging && frame == 0 && fileClick(x, y)) {
+      FOLDER.setCursor(i, x, y);
+    } else if (i == FOLDER.cursor && frame == cursor.length - 1) {
+      FOLDER.forgetCursor();
+    } else if (i == FOLDER.cursor) {
+      FOLDER.dragX = x;
+      FOLDER.dragY = y;
     }
 
     CTX.drawImage(CURSOR, x, y);
