@@ -37,21 +37,36 @@ var FILES_DRAGGING = createImage("img/files_dragging.png");
 var CURSOR = createImage("img/cursor.png");
 var THEN = undefined;
 
+FILE_DRAGGING = false;
+FILE_CURSOR = -1;
+FILE_X = 0;
+FILE_Y = 0;
+FILE_DRAG_X = 0;
+FILE_DRAG_Y = 0;
+FILE_CURSOR_OFF_X = 0;
+FILE_CURSOR_OFF_Y = 0;
+
+function resize() {
+  WIDTH = $(window).width();
+  HEIGHT = $(window).height() - $("#bar").height();
+  CANVAS.width = WIDTH;
+  CANVAS.height = HEIGHT;
+}
+
 function canvas() {
   CANVAS = document.getElementById("canvas");
   CTX = CANVAS.getContext("2d");
   WIDTH = $(window).width();
-  HEIGHT = $(window).height();
+  HEIGHT = $(window).height() - $("#bar").height();
+  FILE_X = WIDTH / 2 - FILE_WIDTH / 2;
+  FILE_Y = HEIGHT / 2 - FILE_HEIGHT / 2;
+  FILE_X = Math.round(FILE_X);
+  FILE_Y = Math.round(FILE_Y);
 
   CANVAS.width = WIDTH;
   CANVAS.height = HEIGHT;
 
-  window.onresize = function() {
-    WIDTH = $(window).width();
-    HEIGHT = $(window).height();
-    CANVAS.width = WIDTH;
-    CANVAS.height = HEIGHT;
-  };
+  window.onresize = resize;
 
   window.onmousedown = function() {
     MOUSE_DOWN = true;
@@ -133,15 +148,6 @@ function fileClick(x, y) {
          (FILE_Y < y && y < FILE_Y + FILE_HEIGHT);
 }
 
-FILE_DRAGGING = false;
-FILE_CURSOR = -1;
-FILE_X = 0;
-FILE_Y = 0;
-FILE_DRAG_X = 0;
-FILE_DRAG_Y = 0;
-FILE_CURSOR_OFF_X = 0;
-FILE_CURSOR_OFF_Y = 0;
-
 function startDragging(cursor, x, y) {
   FILE_DRAGGING = true;
   FILE_CURSOR = cursor;
@@ -180,18 +186,29 @@ function play() {
     var y = cursor[frame].y;
 
     if (DRAW_CHUTES) {
-      CTX.beginPath();
-      CTX.strokeStyle = "rgba(0,0,0,.1)";
       x0 = cursor[0].x;
       y0 = cursor[0].y;
       xn = cursor[cursor.length - 1].x;
       yn = cursor[cursor.length - 1].y;
+
+      CTX.beginPath();
+      CTX.fillStyle = "rgb(0,255,0)";
+      CTX.arc(x0 - 3, y0 - 3, 6, 0,Math.PI*2);
+      CTX.fill();
+
+      CTX.beginPath();
+      CTX.strokeStyle = "rgba(0,0,0,.1)";
       CTX.moveTo(x0, y0);
       for (var n = 0; n < cursor.length; n++) {
         CTX.lineTo(cursor[n].x, cursor[n].y);
       }
       CTX.lineTo(xn, yn);
-      CTX.stroke()
+      CTX.stroke();
+
+      CTX.beginPath();
+      CTX.fillStyle = "rgb(255,0,0)";
+      CTX.arc(xn - 3, yn - 3, 6, 0,Math.PI*2);
+      CTX.fill();
     }
 
     // cursors can steal? or hand off?
