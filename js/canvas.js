@@ -35,6 +35,7 @@ var THEN = undefined;
 function Cursor() {
   this.coordinates = [];
   this.n = 0;
+  this.recording = true;
   this.dragging = false;
   this.folder;
 
@@ -46,10 +47,36 @@ function Cursor() {
   };
 
   this.addXY = function(x, y) {
-    this.coordinates[this.n++] = {
+    this.coordinates.push({
       x: x,
       y: y
-    };
+    });
+  };
+
+  this.drawPath = function(ctx) {
+    x0 = this.coordinates[0].x;
+    y0 = this.coordinates[0].y;
+    xn = this.coordinates[this.coordinates.length - 1].x;
+    yn = this.coordinates[this.coordinates.length - 1].y;
+
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(0,255,0)";
+    ctx.arc(x0 - 3, y0 - 3, 6, 0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(0,0,0,.1)";
+    ctx.moveTo(x0, y0);
+    for (var n = 0; n < this.coordinates.length; n++) {
+      ctx.lineTo(this.coordinates[n].x, this.coordinates[n].y);
+    }
+    ctx.lineTo(xn, yn);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(255,0,0)";
+    ctx.arc(xn - 3, yn - 3, 6, 0,Math.PI*2);
+    ctx.fill();
   };
 }
 
@@ -73,23 +100,18 @@ function Folder(x, y) {
   this.cursorOffX;
   this.cursorOffY;
 
-  // TODO: finish Cursor class
-  this.setCursor = function(cursor, x, y) {
+  this.setCursor = function(cursor) {
     this.dragging = true;
     this.cursor = cursor;
-    this.dragX = x;
-    this.dragY = x;
     this.cursorOffX = x - this.x;
     this.cursorOffY = y - this.y;
   };
 
   this.forgetCursor = function() {
     this.dragging = false;
+    this.x = this.cursor.x - this.cursorOffX;
+    this.y = this.cursor.y - this.cursorOffY;
     this.cursor = undefined;
-    this.x = this.dragX - this.cursorOffX;
-    this.y = this.dragY - this.cursorOffY;
-    this.dragX = undefined;
-    this.dragY = undefined;
     this.dragOffX = undefined;
     this.dragOffY = undefined;
   };
@@ -97,18 +119,11 @@ function Folder(x, y) {
   this.draw = function(ctx) {
     if (!this.dragging) {
       ctx.drawImage(FILES, this.x, this.y);
-    } else if (RECORDING && this.cursor == CURSORS.length - 1) {
-      ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      this.drawDragging(ctx, MOUSE_X - this.cursorOffX, MOUSE_Y - this.cursorOffY);
     } else {
       ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      this.drawDragging(ctx, this.dragX - this.cursorOffX, this.dragY - this.cursorOffY);
+      ctx.drawImage(FILES_DRAGGING, this.cursor.x - this.cursorOffX, this.cursor.y - this.cursorOffY);
     }
   };
-
-  this.drawDragging = function(ctx, x, y) {
-    ctx.drawImage(FILES_DRAGGING, x, y);
-  }
 }
 
 var FOLDER = new Folder();
@@ -136,9 +151,9 @@ function canvas() {
   window.onmousedown = function() {
     MOUSE_DOWN = true;
     stopRecording();
-    initRecording();
+    initRecording(MOUSE_X, MOUSE_Y);
     if (fileClick(MOUSE_X, MOUSE_Y)) {
-      startDragging(CURSORS.length - 1, MOUSE_X, MOUSE_Y);
+      FOLDER.setCursor(RECORDING);
     }
   }
 
@@ -166,13 +181,17 @@ function canvas() {
 function stoppedMoving() {
 }
 
-function initRecording() {
-  RECORDING = true;
-  CURSORS.push([]);
+function initRecording(x, y) {
+  RECORDING = new Cursor(x, y);
+  CURSORS.push(RECORDING);
 }
 
 function stopRecording() {
-  RECORDING = false;
+  if (RECORDING) {
+    RECORDING.recording = false;
+  }
+  RECORDING = undefined;
+
 }
 
 function isStagnant() {
@@ -190,7 +209,7 @@ function move() {
     stopRecording();
   // Start recording
   } else if (!RECORDING && !stagnant && !ONLY_START_ON_MOUSE_DOWN) {
-    initRecording();
+    initRecording(MOUSE_X, MOUSE_Y);
   }
   LAST_MOUSE_X = MOUSE_X;
   LAST_MOUSE_Y = MOUSE_Y;
@@ -202,18 +221,12 @@ function record() {
   if (!RECORDING || !MOUSE_X || !MOUSE_Y) {
     return;
   }
-  CURSORS[CURSORS.length - 1].push({
-    x: MOUSE_X,
-    y: MOUSE_Y
-  });
+  RECORDING.addXY(MOUSE_X, MOUSE_Y);
 }
 
 function fileClick(x, y) {
   return (FOLDER.x < x && x < FOLDER.x + FOLDER.WIDTH) &&
          (FOLDER.y < y && y < FOLDER.y + FOLDER.HEIGHT);
-}
-
-function startDragging(cursor, x, y) {
 }
 
 var TICK = 0;
@@ -223,50 +236,26 @@ function play() {
 
   FOLDER.draw(CTX);
 
-  var length = RECORDING ? CURSORS.length - 1 : CURSORS.length;
-  for (var i = 0; i < length; i++) {
+  for (var i = 0; i < CURSORS.length; i++) {
     var cursor = CURSORS[i];
-    var frame = TICK % cursor.length;
-    var x = cursor[frame].x;
-    var y = cursor[frame].y;
+    var frame = TICK % cursor.coordinates.length;
+    var x = cursor.coordinates[frame].x;
+    var y = cursor.coordinates[frame].y;
 
     if (DRAW_CHUTES) {
-      x0 = cursor[0].x;
-      y0 = cursor[0].y;
-      xn = cursor[cursor.length - 1].x;
-      yn = cursor[cursor.length - 1].y;
-
-      CTX.beginPath();
-      CTX.fillStyle = "rgb(0,255,0)";
-      CTX.arc(x0 - 3, y0 - 3, 6, 0,Math.PI*2);
-      CTX.fill();
-
-      CTX.beginPath();
-      CTX.strokeStyle = "rgba(0,0,0,.1)";
-      CTX.moveTo(x0, y0);
-      for (var n = 0; n < cursor.length; n++) {
-        CTX.lineTo(cursor[n].x, cursor[n].y);
-      }
-      CTX.lineTo(xn, yn);
-      CTX.stroke();
-
-      CTX.beginPath();
-      CTX.fillStyle = "rgb(255,0,0)";
-      CTX.arc(xn - 3, yn - 3, 6, 0,Math.PI*2);
-      CTX.fill();
+      cursor.drawPath(CTX);
     }
 
     // cursors can steal? or hand off?
     if (!FOLDER.dragging && frame == 0 && fileClick(x, y)) {
-      FOLDER.setCursor(i, x, y);
+      FOLDER.setCursor(cursor);
     } else if (i == FOLDER.cursor && frame == cursor.length - 1) {
       FOLDER.forgetCursor();
-    } else if (i == FOLDER.cursor) {
-      FOLDER.dragX = x;
-      FOLDER.dragY = y;
     }
 
-    CTX.drawImage(CURSOR, x, y);
+    if (!cursor.recording) {
+      CTX.drawImage(CURSOR, x, y);
+    }
   }
 }
 
