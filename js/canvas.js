@@ -149,6 +149,9 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
+    if (MOUSE_Y < $("#bar").height()) {
+      return;
+    }
     MOUSE_DOWN = true;
     stopRecording();
     initRecording(MOUSE_X, MOUSE_Y);
@@ -258,4 +261,3 @@ function play() {
     }
   }
 }
-

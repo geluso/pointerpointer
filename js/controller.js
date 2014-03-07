@@ -3,6 +3,9 @@ var app = angular.module('app',[]);
 app.controller('Controller', ['$scope', function($scope) {
   $scope.input = 'loaded';
   $scope.drawPaths = false;
+  $scope.$watch('drawPaths', function(newValue, oldValue) {
+    DRAW_CHUTES = newValue;
+  });
 
   $scope.leftPoints = 0;
   $scope.rightPoints = 0;
