@@ -241,6 +241,9 @@ function play() {
 
   for (var i = 0; i < CURSORS.length; i++) {
     var cursor = CURSORS[i];
+    if (cursor.length == 0) {
+      continue;
+    }
     var frame = TICK % cursor.coordinates.length;
     var x = cursor.coordinates[frame].x;
     var y = cursor.coordinates[frame].y;
