@@ -103,14 +103,14 @@ function Folder(x, y) {
   this.setCursor = function(cursor) {
     this.dragging = true;
     this.cursor = cursor;
-    this.cursorOffX = x - this.x;
-    this.cursorOffY = y - this.y;
+    this.cursorOffX = MOUSE_X - this.x;
+    this.cursorOffY = MOUSE_Y - this.y;
   };
 
   this.forgetCursor = function() {
     this.dragging = false;
-    this.x = this.cursor.x - this.cursorOffX;
-    this.y = this.cursor.y - this.cursorOffY;
+    this.x = MOUSE_X - this.cursorOffX;
+    this.y = MOUSE_Y - this.cursorOffY;
     this.cursor = undefined;
     this.dragOffX = undefined;
     this.dragOffY = undefined;
@@ -121,7 +121,7 @@ function Folder(x, y) {
       ctx.drawImage(FILES, this.x, this.y);
     } else {
       ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      ctx.drawImage(FILES_DRAGGING, this.cursor.x - this.cursorOffX, this.cursor.y - this.cursorOffY);
+      ctx.drawImage(FILES_DRAGGING, MOUSE_X - this.cursorOffX, MOUSE_Y - this.cursorOffY);
     }
   };
 }
@@ -163,7 +163,7 @@ function canvas() {
   window.onmouseup = function() {
     MOUSE_DOWN = false;
     stopRecording();
-    if (FOLDER.dragging && FOLDER.cursor == CURSORS.length - 1) {
+    if (FOLDER.dragging && FOLDER.cursor == CURSORS[CURSORS.length - 1]) {
       FOLDER.forgetCursor();
     }
   }
