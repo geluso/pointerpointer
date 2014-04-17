@@ -4,6 +4,7 @@ app.controller('Controller', ['$scope', function($scope) {
   $scope.input = 'loaded';
   $scope.drawPaths = false;
 
+  $scope.record = true;
   $scope.permagrab = true;
   $scope.quickSteal = true;
 
@@ -21,6 +22,10 @@ app.controller('Controller', ['$scope', function($scope) {
 
   $scope.$watch('onlyCurrentCursor', function(newValue, oldValue) {
     ONLY_CURRENT_CURSOR = newValue;
+  });
+
+  $scope.$watch('record', function(newValue, oldValue) {
+    RECORD = newValue;
   });
 
   $scope.setBackground = function() {

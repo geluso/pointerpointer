@@ -24,6 +24,7 @@ var LAST_MOVE = 0;
 var ONLY_START_ON_MOUSE_DOWN = true;
 
 var RECORDING = false;
+var RECORD = true;
 var ALIVE = false;
 
 function createImage(src) {
@@ -71,6 +72,7 @@ function canvas() {
     }
     MOUSE_DOWN = true;
     stopRecording();
+
     initRecording(MOUSE_X, MOUSE_Y);
     if (FOLDER.isClickedOn(MOUSE_X, MOUSE_Y)) {
       FOLDER.setCursor(RECORDING);
@@ -79,7 +81,7 @@ function canvas() {
 
   window.onmouseup = function() {
     MOUSE_DOWN = false;
-    if (FOLDER.dragging && FOLDER.cursor == CURSORS[CURSORS.length - 1]) {
+    if (FOLDER.dragging && FOLDER.cursor == CURSORS[CURSORS.length - 1] || !RECORD) {
       FOLDER.forgetCursor();
     }
     stopRecording();
@@ -100,7 +102,9 @@ function canvas() {
 
 function initRecording(x, y) {
   RECORDING = new Cursor(x, y);
-  CURSORS.push(RECORDING);
+  if (RECORD) {
+    CURSORS.push(RECORDING);
+  }
 }
 
 function stopRecording() {
