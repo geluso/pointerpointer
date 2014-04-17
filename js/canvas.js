@@ -32,25 +32,31 @@ var CTX;
 var CURSOR = createImage("img/cursor.png");
 var THEN = undefined;
 
-function Cursor() {
+function Cursor(x, y) {
   this.coordinates = [];
   this.n = 0;
   this.recording = true;
   this.dragging = false;
   this.folder;
 
-  this.getXY = function() {
-     if (this.coordinates.length > n) {
-       return undefined;
-     }
-     return this.coordinates[this.n];
-  };
-
   this.addXY = function(x, y) {
+    this.n++;
     this.coordinates.push({
       x: x,
       y: y
     });
+  };
+  this.addXY(x, y, "init");
+
+  this.getXY = function() {
+     if (this.coordinates.length == 0) {
+       return undefined;
+     }
+     return this.coordinates[this.n % this.coordinates.length];
+  };
+
+  this.tick = function() {
+    this.n = (this.n + 1) % this.coordinates.length;
   };
 
   this.drawPath = function(ctx) {
@@ -101,16 +107,18 @@ function Folder(x, y) {
   this.cursorOffY;
 
   this.setCursor = function(cursor) {
+    console.log("set cursor");
     this.dragging = true;
     this.cursor = cursor;
-    this.cursorOffX = MOUSE_X - this.x;
-    this.cursorOffY = MOUSE_Y - this.y;
+    this.cursorOffX = cursor.getXY().x - this.x;
+    this.cursorOffY = cursor.getXY().y - this.y;
   };
 
   this.forgetCursor = function() {
+    console.log("forget cursor");
     this.dragging = false;
-    this.x = MOUSE_X - this.cursorOffX;
-    this.y = MOUSE_Y - this.cursorOffY;
+    this.x = this.cursor.getXY().x - this.cursorOffX;
+    this.y = this.cursor.getXY().y - this.cursorOffY;
     this.cursor = undefined;
     this.dragOffX = undefined;
     this.dragOffY = undefined;
@@ -121,7 +129,7 @@ function Folder(x, y) {
       ctx.drawImage(FILES, this.x, this.y);
     } else {
       ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      ctx.drawImage(FILES_DRAGGING, MOUSE_X - this.cursorOffX, MOUSE_Y - this.cursorOffY);
+      ctx.drawImage(FILES_DRAGGING, this.cursor.getXY().x - this.cursorOffX, this.cursor.getXY().y - this.cursorOffY);
     }
   };
 }
@@ -149,6 +157,7 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
+    console.log("mousedown");
     if (MOUSE_Y < $("#bar").height()) {
       return;
     }
@@ -164,6 +173,7 @@ function canvas() {
     MOUSE_DOWN = false;
     stopRecording();
     if (FOLDER.dragging && FOLDER.cursor == CURSORS[CURSORS.length - 1]) {
+      console.log("mouseup forget cursor");
       FOLDER.forgetCursor();
     }
   }
@@ -241,21 +251,23 @@ function play() {
 
   for (var i = 0; i < CURSORS.length; i++) {
     var cursor = CURSORS[i];
-    if (cursor.length == 0) {
+    if (cursor.recording || cursor.length == 0) {
       continue;
     }
-    var frame = TICK % cursor.coordinates.length;
-    var x = cursor.coordinates[frame].x;
-    var y = cursor.coordinates[frame].y;
+    cursor.tick();
+    var x = cursor.getXY().x;
+    var y = cursor.getXY().y;
 
     if (DRAW_CHUTES) {
       cursor.drawPath(CTX);
     }
 
     // cursors can steal? or hand off?
-    if (!FOLDER.dragging && frame == 0 && fileClick(x, y)) {
+    if (!FOLDER.dragging && cursor.n == 0 && fileClick(x, y)) {
+      console.log("cursor picking up folder");
       FOLDER.setCursor(cursor);
-    } else if (i == FOLDER.cursor && frame == cursor.length - 1) {
+    } else if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
+      console.log("playback forget cursor");
       FOLDER.forgetCursor();
     }
 
