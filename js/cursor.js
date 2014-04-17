@@ -1,4 +1,10 @@
+var CURSOR_WIDTH = 13;
+var CURSOR_HEIGHT = 19;
+
 function Cursor(x, y) {
+  this.WIDTH = 13;
+  this.HEIGHT = 19;
+
   this.coordinates = [];
   this.n = 0;
   this.recording = true;
@@ -7,9 +13,10 @@ function Cursor(x, y) {
 
   this.addXY = function(x, y) {
     this.n++;
+    // including stange manually-calibrated offsets.
     this.coordinates.push({
-      x: x,
-      y: y
+      x: x - 2,
+      y: y - CURSOR_HEIGHT - 6
     });
   };
   this.addXY(x, y, "init");
