@@ -67,7 +67,7 @@ function canvas() {
     MOUSE_DOWN = true;
     stopRecording();
     initRecording(MOUSE_X, MOUSE_Y);
-    if (fileClick(MOUSE_X, MOUSE_Y)) {
+    if (FOLDER.isClickedOn(MOUSE_X, MOUSE_Y)) {
       FOLDER.setCursor(RECORDING);
     }
   }
@@ -137,11 +137,6 @@ function record() {
   RECORDING.addXY(MOUSE_X, MOUSE_Y);
 }
 
-function fileClick(x, y) {
-  return (FOLDER.x < x && x < FOLDER.x + FOLDER.WIDTH) &&
-         (FOLDER.y < y && y < FOLDER.y + FOLDER.HEIGHT);
-}
-
 var TICK = 0;
 function play() {
   TICK++;
@@ -158,7 +153,10 @@ function play() {
     var y = cursor.getXY().y;
 
     // cursors can steal? or hand off?
-    if (!FOLDER.dragging && cursor.n == 0 && fileClick(x, y)) {
+    if (cursor.n == 0 && FOLDER.isClickedOn(x, y)) {
+      if (FOLDER.dragging) {
+        FOLDER.forgetCursor();
+      }
       FOLDER.setCursor(cursor);
     } else if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
       FOLDER.forgetCursor();

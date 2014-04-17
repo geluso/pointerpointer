@@ -12,6 +12,7 @@ function Folder(x, y) {
   this.cursorOffX;
   this.cursorOffY;
 
+
   this.setCursor = function(cursor) {
     this.dragging = true;
     this.cursor = cursor;
@@ -26,6 +27,19 @@ function Folder(x, y) {
     this.cursor = undefined;
     this.dragOffX = undefined;
     this.dragOffY = undefined;
+  };
+
+  this.isClickedOn = function(x, y) {
+    var thisX, thisY;
+    if (this.dragging) {
+      thisX = this.cursor.getXY().x - this.cursorOffX;
+      thisY = this.cursor.getXY().y - this.cursorOffY;
+    } else {
+      thisX = this.x;
+      thisY = this.y;
+    }
+    return (thisX < x && x < thisX + this.WIDTH) &&
+           (thisY < y && y < thisY + this.HEIGHT);
   };
 
   this.draw = function(ctx) {
