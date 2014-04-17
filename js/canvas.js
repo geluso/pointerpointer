@@ -74,10 +74,10 @@ function canvas() {
 
   window.onmouseup = function() {
     MOUSE_DOWN = false;
-    stopRecording();
     if (FOLDER.dragging && FOLDER.cursor == CURSORS[CURSORS.length - 1]) {
       FOLDER.forgetCursor();
     }
+    stopRecording();
   }
 
   window.onmousemove = function(ev) {
@@ -100,7 +100,6 @@ function initRecording(x, y) {
 
 function stopRecording() {
   if (RECORDING) {
-    FOLDER.forgetCursor();
     RECORDING.recording = false;
     RECORDING.n = 0;
   }
