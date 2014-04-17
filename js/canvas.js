@@ -7,7 +7,12 @@ var WIDTH;
 var HEIGHT;
 var CURSOR;
 
-var DRAW_CHUTES = true;
+var PERMAGRAB = true;
+var QUICK_STEAL = true;
+var DRAW_CHUTES = false;
+var ONLY_CURRENT_CURSOR = false;
+
+var BACKGROUND_IMAGE = undefined;
 
 var MOUSE_DOWN = false;
 var MOUSE_X;
@@ -142,6 +147,10 @@ function play() {
   TICK++;
   CTX.clearRect(0, 0, WIDTH, HEIGHT);
 
+  if (BACKGROUND_IMAGE) {
+    CTX.drawImage(BACKGROUND_IMAGE, 0, 0, CANVAS.width, CANVAS.height);
+  }
+
   FOLDER.draw(CTX);
 
   for (var i = 0; i < CURSORS.length; i++) {
@@ -152,13 +161,17 @@ function play() {
     var x = cursor.getXY().x;
     var y = cursor.getXY().y;
 
-    // cursors can steal? or hand off?
-    if (cursor.n == 0 && FOLDER.isClickedOn(x, y)) {
-      if (FOLDER.dragging) {
-        FOLDER.forgetCursor();
+    if (FOLDER.isClickedOn(x, y)) {
+      // Is the cursor grabbing the folder?
+      if (cursor.n == 0 || QUICK_STEAL) {
+        if (!FOLDER.dragging || FOLDER.dragging && !PERMAGRAB) {
+          FOLDER.setCursor(cursor);
+        }
       }
-      FOLDER.setCursor(cursor);
-    } else if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
+    }
+    if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
+      console.log("dragging complete", cursor.n, cursor.coordinates.length - 1);
+      // The cursor is done dragging the folder.
       FOLDER.forgetCursor();
     }
     

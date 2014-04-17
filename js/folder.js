@@ -14,6 +14,9 @@ function Folder(x, y) {
 
 
   this.setCursor = function(cursor) {
+    // forget any previous cursor.
+    this.forgetCursor();
+
     this.dragging = true;
     this.cursor = cursor;
     this.cursorOffX = cursor.getXY().x - this.x;
@@ -21,6 +24,9 @@ function Folder(x, y) {
   };
 
   this.forgetCursor = function() {
+    if (!this.cursor) {
+      return;
+    }
     this.dragging = false;
     this.x = this.cursor.getXY().x - this.cursorOffX;
     this.y = this.cursor.getXY().y - this.cursorOffY;
