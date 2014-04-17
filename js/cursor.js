@@ -28,6 +28,17 @@ function Cursor(x, y) {
     this.n = (this.n + 1) % this.coordinates.length;
   };
 
+  this.draw = function(ctx) {
+    if (DRAW_CHUTES) {
+      this.drawPath(ctx);
+    }
+    if (!this.recording) {
+      var x = this.getXY().x;
+      var y = this.getXY().y;
+      ctx.drawImage(CURSOR, x, y);
+    }
+  };
+
   this.drawPath = function(ctx) {
     x0 = this.coordinates[0].x;
     y0 = this.coordinates[0].y;

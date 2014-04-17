@@ -157,19 +157,13 @@ function play() {
     var x = cursor.getXY().x;
     var y = cursor.getXY().y;
 
-    if (DRAW_CHUTES) {
-      cursor.drawPath(CTX);
-    }
-
     // cursors can steal? or hand off?
     if (!FOLDER.dragging && cursor.n == 0 && fileClick(x, y)) {
       FOLDER.setCursor(cursor);
     } else if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
       FOLDER.forgetCursor();
     }
-
-    if (!cursor.recording) {
-      CTX.drawImage(CURSOR, x, y);
-    }
+    
+    cursor.draw(CTX)
   }
 }
