@@ -8,6 +8,10 @@ app.controller('Controller', ['$scope', function($scope) {
   $scope.permagrab = true;
   $scope.quickSteal = true;
 
+  $scope.reset = function() {
+    CURSORS = [];
+  };
+
   $scope.$watch('permagrab', function(newValue, oldValue) {
     PERMAGRAB = newValue;
   });
