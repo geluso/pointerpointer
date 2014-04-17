@@ -100,7 +100,9 @@ function initRecording(x, y) {
 
 function stopRecording() {
   if (RECORDING) {
+    FOLDER.forgetCursor();
     RECORDING.recording = false;
+    RECORDING.n = 0;
   }
   RECORDING = undefined;
 
@@ -153,7 +155,6 @@ function play() {
     if (cursor.recording || cursor.length == 0) {
       continue;
     }
-    cursor.tick();
     var x = cursor.getXY().x;
     var y = cursor.getXY().y;
 
@@ -165,5 +166,6 @@ function play() {
     }
     
     cursor.draw(CTX)
+    cursor.tick();
   }
 }
