@@ -191,9 +191,6 @@ function canvas() {
   }, FRAMERATE);
 }
 
-function stoppedMoving() {
-}
-
 function initRecording(x, y) {
   RECORDING = new Cursor(x, y);
   CURSORS.push(RECORDING);
