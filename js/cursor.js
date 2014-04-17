@@ -17,8 +17,11 @@ function Cursor(x, y) {
   this.getXY = function() {
      if (this.coordinates.length == 0) {
        return undefined;
+     } else if (this.recording) {
+       return this.coordinates[this.coordinates.length - 1];
+     } else {
+       return this.coordinates[this.n % this.coordinates.length];
      }
-     return this.coordinates[this.n % this.coordinates.length];
   };
 
   this.tick = function() {

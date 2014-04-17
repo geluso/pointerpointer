@@ -13,7 +13,6 @@ function Folder(x, y) {
   this.cursorOffY;
 
   this.setCursor = function(cursor) {
-    console.log("set cursor");
     this.dragging = true;
     this.cursor = cursor;
     this.cursorOffX = cursor.getXY().x - this.x;
@@ -21,7 +20,6 @@ function Folder(x, y) {
   };
 
   this.forgetCursor = function() {
-    console.log("forget cursor");
     this.dragging = false;
     this.x = this.cursor.getXY().x - this.cursorOffX;
     this.y = this.cursor.getXY().y - this.cursorOffY;
@@ -34,8 +32,10 @@ function Folder(x, y) {
     if (!this.dragging) {
       ctx.drawImage(FILES, this.x, this.y);
     } else {
+      var x = this.cursor.getXY().x;
+      var y = this.cursor.getXY().y;
       ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      ctx.drawImage(FILES_DRAGGING, this.cursor.getXY().x - this.cursorOffX, this.cursor.getXY().y - this.cursorOffY);
+      ctx.drawImage(FILES_DRAGGING, x - this.cursorOffX, y - this.cursorOffY);
     }
   };
 }
