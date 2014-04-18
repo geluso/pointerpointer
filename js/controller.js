@@ -10,6 +10,8 @@ app.controller('Controller', ['$scope', function($scope) {
 
   $scope.reset = function() {
     CURSORS = [];
+    $scope.background = "";
+    BACKGROUND_IMAGE = undefined;
   };
 
   $scope.loadChutes = function() {
