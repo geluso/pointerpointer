@@ -33,3 +33,7 @@ div {
 #bar {
   background-color: #CCCCCC;
 }
+
+label {
+  cursor: pointer;
+}
