@@ -13,6 +13,9 @@
     <!--
     <script src=http://dystroy.org/JSON.prune/.js></script>
     -->
+    <script src="js/pruner.js"></script>
+    <script src="saves/chutes_and_ladders.js"></script>
+    <script src="saves/plinko.js"></script>
   </head>
   <body ng-controller="Controller">
     <div id="bar">
@@ -25,6 +28,8 @@
       L: {{leftPoints}}
       R: {{rightPoints}}
       image: <input type="text" ng-model="background" /> <button ng-click="setBackground()">set</button>
+      <button ng-click="loadChutes()">chutes</button>
+      <button ng-click="loadPlinko()">plinko</button>
     </div>
     <canvas id="canvas"></canvas>
   </body>

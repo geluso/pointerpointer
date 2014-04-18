@@ -12,6 +12,27 @@ app.controller('Controller', ['$scope', function($scope) {
     CURSORS = [];
   };
 
+  $scope.loadChutes = function() {
+    $scope.setBackground(CHUTES_AND_LADDERS.background);
+    $scope.background = CHUTES_AND_LADDERS.background;
+    initCursors(CHUTES_AND_LADDERS.cursors);
+  };
+
+  $scope.loadPlinko = function() {
+    $scope.setBackground(PLINKO.background);
+    $scope.background = PLINKO.background;
+    initCursors(PLINKO.cursors);
+  };
+
+  function initCursors(cursors) {
+    CURSORS = [];
+    for (var i = 0; i < cursors.length; i++) {
+      var cursor = new Cursor();
+      cursor.fromJSON(cursors[i]);
+      CURSORS.push(cursor);
+    }
+  }
+
   $scope.$watch('permagrab', function(newValue, oldValue) {
     PERMAGRAB = newValue;
   });
@@ -32,8 +53,9 @@ app.controller('Controller', ['$scope', function($scope) {
     RECORD = newValue;
   });
 
-  $scope.setBackground = function() {
-    var img = createImage($scope.background);
+  $scope.setBackground = function(url) {
+    url = url || $scope.background;
+    var img = createImage(url);
     img.onload = function() {
       BACKGROUND_IMAGE = img;
     };

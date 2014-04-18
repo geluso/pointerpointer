@@ -11,6 +11,14 @@ function Cursor(x, y) {
   this.dragging = false;
   this.folder;
 
+  this.fromJSON = function(json) {
+    this.coordinates = json.coordinates;
+    this.n = json.n;
+    this.recording = json.recording;
+    this.dragging = json.dragging;
+    this.folder = json.folder;
+  };
+
   this.addXY = function(x, y) {
     this.n++;
     // including stange manually-calibrated offsets.
@@ -19,7 +27,9 @@ function Cursor(x, y) {
       y: y - CURSOR_HEIGHT - 6
     });
   };
-  this.addXY(x, y, "init");
+  if (x && y) {
+    this.addXY(x, y);
+  }
 
   this.getXY = function() {
      if (this.coordinates.length == 0) {
