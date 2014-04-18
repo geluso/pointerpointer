@@ -13,6 +13,14 @@ function Cursor(x, y) {
 
   this.fromJSON = function(json) {
     this.coordinates = json.coordinates;
+    for (var i = 0; i < this.coordinates.length; i++) {
+      if (this.coordinates[i].x > 1) {
+        this.coordinates[i].x /= 806;
+      }
+      if (this.coordinates[i].y > 1) {
+        this.coordinates[i].y /= 1436;
+      }
+    }
     this.n = json.n;
     this.recording = json.recording;
     this.dragging = json.dragging;
