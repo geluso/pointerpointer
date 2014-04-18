@@ -21,6 +21,7 @@ function Folder(x, y) {
     this.cursor = cursor;
     this.cursorOffX = cursor.getXY().x - this.x;
     this.cursorOffY = cursor.getXY().y - this.y;
+    debugger
   };
 
   this.forgetCursor = function() {
@@ -44,8 +45,10 @@ function Folder(x, y) {
       thisX = this.x;
       thisY = this.y;
     }
-    return (thisX < x && x < thisX + this.WIDTH) &&
-           (thisY < y && y < thisY + this.HEIGHT);
+    debugger
+    result = (absX(thisX) < absX(x) && absX(x) < absX(thisX) + this.WIDTH) &&
+             (absY(thisY) < absY(y) && absY(y) < absY(thisY) + this.HEIGHT);
+    return result;
   };
 
   this.draw = function(ctx) {
@@ -56,7 +59,7 @@ function Folder(x, y) {
       var y = this.cursor.getXY().y;
       absDrawImage(ctx, FILES_SELECTED, this.x, this.y);
       // investigate cursorOffX
-      absDrawImage(FILES_DRAGGING, x - this.cursorOffX, y - this.cursorOffY);
+      absDrawImage(ctx, FILES_DRAGGING, x - this.cursorOffX, y - this.cursorOffY);
     }
   };
 }
