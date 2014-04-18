@@ -21,10 +21,9 @@ function Cursor(x, y) {
 
   this.addXY = function(x, y) {
     this.n++;
-    // including stange manually-calibrated offsets.
     this.coordinates.push({
-      x: x - 2,
-      y: y - CURSOR_HEIGHT - 6
+      x: x,
+      y: y
     });
   };
   if (x && y) {
@@ -52,7 +51,10 @@ function Cursor(x, y) {
     if (!this.recording) {
       var x = this.getXY().x;
       var y = this.getXY().y;
-      ctx.drawImage(CURSOR, x, y);
+      // including stange manually-calibrated offsets.
+      x = absX(x) - 2;
+      y = absY(y) - CURSOR_HEIGHT - 6;
+      absDrawImage(ctx, CURSOR, x, y);
     }
   };
 
@@ -64,21 +66,21 @@ function Cursor(x, y) {
 
     ctx.beginPath();
     ctx.fillStyle = "rgb(0,255,0)";
-    ctx.arc(x0 - 3, y0 - 3, 6, 0,Math.PI*2);
+    absArc(ctx, absX(x0) - 3, absY(y0) - 3, 6, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
     ctx.strokeStyle = "rgba(0,0,0,.1)";
-    ctx.moveTo(x0, y0);
+    absMoveTo(ctx, x0, y0);
     for (var n = 0; n < this.coordinates.length; n++) {
-      ctx.lineTo(this.coordinates[n].x, this.coordinates[n].y);
+      absLineTo(ctx, this.coordinates[n].x, this.coordinates[n].y);
     }
-    ctx.lineTo(xn, yn);
+    absLineTo(ctx, xn, yn);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.fillStyle = "rgb(255,0,0)";
-    ctx.arc(xn - 3, yn - 3, 6, 0,Math.PI*2);
+    absArc(ctx, absX(xn) - 3, absY(yn) - 3, 6, 0, Math.PI * 2);
     ctx.fill();
   };
 }

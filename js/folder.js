@@ -50,12 +50,13 @@ function Folder(x, y) {
 
   this.draw = function(ctx) {
     if (!this.dragging) {
-      ctx.drawImage(FILES, this.x, this.y);
+      absDrawImage(ctx, FILES, this.x, this.y);
     } else {
       var x = this.cursor.getXY().x;
       var y = this.cursor.getXY().y;
-      ctx.drawImage(FILES_SELECTED, this.x, this.y);
-      ctx.drawImage(FILES_DRAGGING, x - this.cursorOffX, y - this.cursorOffY);
+      absDrawImage(ctx, FILES_SELECTED, this.x, this.y);
+      // investigate cursorOffX
+      absDrawImage(FILES_DRAGGING, x - this.cursorOffX, y - this.cursorOffY);
     }
   };
 }

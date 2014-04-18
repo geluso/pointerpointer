@@ -58,8 +58,8 @@ function canvas() {
   CTX = CANVAS.getContext("2d");
   WIDTH = $(window).width();
   HEIGHT = $(window).height() - $("#bar").height();
-  FOLDER.x = Math.round(WIDTH / 2 - FOLDER.WIDTH / 2);
-  FOLDER.y = Math.round(HEIGHT / 2 - FOLDER.HEIGHT / 2);
+  FOLDER.x = .5;
+  FOLDER.y = .5;
 
   CANVAS.width = WIDTH;
   CANVAS.height = HEIGHT;
@@ -88,8 +88,8 @@ function canvas() {
   }
 
   window.onmousemove = function(ev) {
-    MOUSE_X = ev.clientX;
-    MOUSE_Y = ev.clientY;
+    MOUSE_X = ev.clientX / window.innerWidth;
+    MOUSE_Y = ev.clientY / (window.innerHeight - $("#bar").height());
     LAST_MOVE = Date.now();
   };
 
