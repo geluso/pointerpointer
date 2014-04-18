@@ -21,7 +21,6 @@ function Folder(x, y) {
     this.cursor = cursor;
     this.cursorOffX = cursor.getXY().x - this.x;
     this.cursorOffY = cursor.getXY().y - this.y;
-    debugger
   };
 
   this.forgetCursor = function() {
@@ -45,7 +44,6 @@ function Folder(x, y) {
       thisX = this.x;
       thisY = this.y;
     }
-    debugger
     result = (absX(thisX) < absX(x) && absX(x) < absX(thisX) + this.WIDTH) &&
              (absY(thisY) < absY(y) && absY(y) < absY(thisY) + this.HEIGHT);
     return result;

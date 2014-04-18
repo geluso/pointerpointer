@@ -174,7 +174,6 @@ function play() {
       }
     }
     if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
-      console.log("dragging complete", cursor.n, cursor.coordinates.length - 1);
       // The cursor is done dragging the folder.
       FOLDER.forgetCursor();
     }
