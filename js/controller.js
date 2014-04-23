@@ -32,8 +32,19 @@ app.controller('Controller', ['$scope', function($scope) {
     initCursors(CROSSWALK.cursors);
   };
 
+  $scope.merge = function() {
+    $scope.background = "";
+    initCursors(CROSSWALK.cursors);
+    appendCursors(CHUTES_AND_LADDERS.cursors);
+    appendCursors(PLINKO.cursors);
+  };
+
   function initCursors(cursors) {
     CURSORS = [];
+    appendCursors(cursors);
+  }
+
+  function appendCursors(cursors) {
     for (var i = 0; i < cursors.length; i++) {
       var cursor = new Cursor();
       cursor.fromJSON(cursors[i]);
