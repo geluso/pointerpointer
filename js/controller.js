@@ -8,6 +8,32 @@ app.controller('Controller', ['$scope', function($scope) {
   $scope.permagrab = true;
   $scope.quickSteal = true;
 
+  $scope.nstart = 0;
+  $scope.nend = 0;
+
+  NMIN = 0;
+  $scope.nmin = function() {
+    if (CURSORS.length == 0) {
+      return undefined;
+    }
+    var min = CURSORS[0].coordinates.length;
+    for (var i = 0; i < CURSORS.length; i++) {
+      min = Math.min(CURSORS[i].coordinates.length, min);
+    }
+    NMIN = min;
+    return min;
+  };
+
+  NMAX = 0;
+  $scope.nmax = function() {
+    var max = 0;  
+    for (var i = 0; i < CURSORS.length; i++) {
+      max = Math.max(CURSORS[i].coordinates.length, max);
+    }
+    NMAX = max;
+    return max;
+  };
+
   $scope.reset = function() {
     CURSORS = [];
     $scope.background = "";
