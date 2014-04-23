@@ -12,14 +12,18 @@ function Cursor(x, y) {
   this.folder;
 
   this.fromJSON = function(json) {
-    this.coordinates = json.coordinates;
-    for (var i = 0; i < this.coordinates.length; i++) {
-      if (this.coordinates[i].x > 1) {
-        this.coordinates[i].x /= 806;
+    this.coordinates = [];
+    var x, y;
+    for (var i = 0; i < json.coordinates.length; i++) {
+      x = json.coordinates[i].x;
+      y = json.coordinates[i].y;
+      if (x > 1) {
+        x /= 806;
       }
-      if (this.coordinates[i].y > 1) {
-        this.coordinates[i].y /= 1436;
+      if (y > 1) {
+        y /= 1436;
       }
+      this.coordinates.push({x: x, y: y});
     }
     this.n = json.n;
     this.recording = json.recording;

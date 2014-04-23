@@ -26,6 +26,12 @@ app.controller('Controller', ['$scope', function($scope) {
     initCursors(PLINKO.cursors);
   };
 
+  $scope.loadCrosswalk = function() {
+    $scope.setBackground(CROSSWALK.background);
+    $scope.background = CROSSWALK.background;
+    initCursors(CROSSWALK.cursors);
+  };
+
   function initCursors(cursors) {
     CURSORS = [];
     for (var i = 0; i < cursors.length; i++) {
