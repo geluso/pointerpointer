@@ -18,10 +18,10 @@ function Cursor(x, y) {
       x = json.coordinates[i].x;
       y = json.coordinates[i].y;
       if (x > 1) {
-        x /= 806;
+        x /= 1436;
       }
       if (y > 1) {
-        y /= 1436;
+        y /= 806;
       }
       this.coordinates.push({x: x, y: y});
     }
