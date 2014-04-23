@@ -48,11 +48,19 @@ function Cursor(x, y) {
      } else if (this.recording) {
        return this.coordinates[this.coordinates.length - 1];
      } else {
-       return this.coordinates[this.n % this.coordinates.length];
+       var index = this.n % this.coordinates.length;
+       if (index < 0 || index >= this.coordinates.length) {
+         return undefined;
+       }
+       return this.coordinates[index];
      }
   };
 
-  this.tick = function() {
+  this.tick = function(n) {
+    if (n) {
+      this.n = n;
+      return;
+    }
     this.n = (this.n + 1) % this.coordinates.length;
   };
 

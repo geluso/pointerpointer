@@ -1,3 +1,4 @@
+var NMIN, NMAX, NSTART, NEND;
 var app = angular.module('app',[]);
 
 app.controller('Controller', ['$scope', function($scope) {
@@ -10,6 +11,14 @@ app.controller('Controller', ['$scope', function($scope) {
 
   $scope.nstart = 0;
   $scope.nend = 0;
+  $scope.$watch('nstart', function(newVal, oldVal) {
+    console.log("nstart", NSTART);
+    NSTART = $scope.nstart;
+  });
+  $scope.$watch('nend', function(newVal, oldVal) {
+    console.log("nend", NEND);
+    NEND = $scope.nend;
+  });
 
   NMIN = 0;
   $scope.nmin = function() {

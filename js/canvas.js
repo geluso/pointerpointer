@@ -179,6 +179,11 @@ function play() {
     }
     
     cursor.draw(CTX)
-    cursor.tick();
+
+    if (NSTART && NEND) {
+      TICK = NSTART + (TICK % (NEND - NSTART));
+    }
+
+    cursor.tick(TICK);
   }
 }
