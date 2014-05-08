@@ -42,7 +42,10 @@ function Cursor(x, y) {
     this.addXY(x, y);
   }
 
-  this.getXY = function() {
+  this.getXY = function(index) {
+     if (index == -1) {
+       return this.coordinates[this.coordinates.length - 1];
+     }
      if (this.coordinates.length == 0) {
        return undefined;
      } else if (this.recording) {
@@ -73,7 +76,7 @@ function Cursor(x, y) {
       var y = this.getXY().y;
       // including stange manually-calibrated offsets.
       x = absX(x) - 2;
-      y = absY(y) - CURSOR_HEIGHT - 6;
+      y = absY(y) - 3 * CURSOR_HEIGHT - 6;
       absDrawImage(ctx, CURSOR, x, y);
     }
   };

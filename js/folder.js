@@ -28,8 +28,8 @@ function Folder(x, y) {
       return;
     }
     this.dragging = false;
-    this.x = this.cursor.getXY().x - this.cursorOffX;
-    this.y = this.cursor.getXY().y - this.cursorOffY;
+    this.x = this.cursor.getXY(-1).x - this.cursorOffX;
+    this.y = this.cursor.getXY(-1).y - this.cursorOffY;
     this.cursor = undefined;
     this.dragOffX = undefined;
     this.dragOffY = undefined;

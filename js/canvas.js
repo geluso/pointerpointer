@@ -169,12 +169,16 @@ function play() {
       // Is the cursor grabbing the folder?
       if (cursor.n == 0 || QUICK_STEAL) {
         if (!FOLDER.dragging || FOLDER.dragging && !PERMAGRAB) {
+          console.log("picked up", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
           FOLDER.setCursor(cursor);
         }
       }
     }
-    if (!cursor.recording && cursor == FOLDER.cursor && cursor.n == cursor.coordinates.length - 1) {
+    var folderHasCursor = !cursor.recording && cursor == FOLDER.cursor;
+    var isAtEnd = (cursor.n % cursor.coordinates.length) == 0;
+    if (folderHasCursor && isAtEnd) {
       // The cursor is done dragging the folder.
+      console.log("dropped off", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
       FOLDER.forgetCursor();
     }
     
