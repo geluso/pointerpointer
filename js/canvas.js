@@ -159,6 +159,7 @@ function play() {
 
   for (var i = 0; i < CURSORS.length; i++) {
     var cursor = CURSORS[i];
+    cursor.draw(CTX)
     if (cursor.recording || cursor.length == 0) {
       continue;
     }
@@ -166,23 +167,35 @@ function play() {
     var y = cursor.getXY().y;
 
     if (FOLDER.isClickedOn(x, y)) {
+      if (DEBUG) {
+        debugger
+      }
       // Is the cursor grabbing the folder?
       if (cursor.n == 0 || QUICK_STEAL) {
         if (!FOLDER.dragging || FOLDER.dragging && !PERMAGRAB) {
-          console.log("picked up", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
+          // console.log("picked up", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
           FOLDER.setCursor(cursor);
         }
       }
     }
     var folderHasCursor = !cursor.recording && cursor == FOLDER.cursor;
-    var isAtEnd = (cursor.n % cursor.coordinates.length) == 0;
+    var isAtEnd = (cursor.n % cursor.coordinates.length) == cursor.coordinates.length - 1;
+    if (LOG) {
+      console.log("has, end:", folderHasCursor, isAtEnd, cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
+    }
     if (folderHasCursor && isAtEnd) {
+      if (DEBUG) {
+        debugger
+      }
       // The cursor is done dragging the folder.
-      console.log("dropped off", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
+      // console.log("dropped off", cursor.n % cursor.coordinates.length, "/", cursor.coordinates.length);
       FOLDER.forgetCursor();
     }
     
     cursor.draw(CTX)
-    cursor.tick(TICK);
+    cursor.tick();
   }
 }
+
+LOG = false;
+DEBUG = false;
