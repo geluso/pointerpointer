@@ -89,7 +89,13 @@ function canvas() {
 
   window.onmousemove = function(ev) {
     MOUSE_X = ev.clientX / window.innerWidth;
-    MOUSE_Y = ev.clientY / (window.innerHeight - $("#bar").height());
+    MOUSE_Y = ev.clientY / window.innerHeight;
+
+    CTX.beginPath();
+    CTX.fillStyle = "rgb(0,255,0)";
+    absArc(CTX, MOUSE_X, MOUSE_Y, 6, 0, Math.PI * 2);
+    CTX.fill();
+
     LAST_MOVE = Date.now();
   };
 

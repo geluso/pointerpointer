@@ -74,9 +74,8 @@ function Cursor(x, y) {
     if (!this.recording) {
       var x = this.getXY().x;
       var y = this.getXY().y;
-      // including stange manually-calibrated offsets.
-      x = absX(x) - 2;
-      y = absY(y) - 3 * CURSOR_HEIGHT - 6;
+      x = absX(x);
+      y = absY(y);
       absDrawImage(ctx, CURSOR, x, y);
     }
   };
