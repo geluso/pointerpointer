@@ -70,7 +70,7 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
-    if (absY(MOUSE_Y) < $("#controls").height()) {
+    if (absY(MOUSE_Y) < $("#controls").width()) {
       return;
     }
     MOUSE_DOWN = true;
