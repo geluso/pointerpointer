@@ -70,9 +70,6 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
-    if (absY(MOUSE_Y) < $("#controls").width()) {
-      return;
-    }
     MOUSE_DOWN = true;
     stopRecording();
 
@@ -161,6 +158,11 @@ function play() {
   }
 
   FOLDER.draw(CTX);
+
+  if (CURSORS.length == 0) {
+    return;
+  }
+
 
   for (var i = 0; i < CURSORS.length; i++) {
     var cursor = CURSORS[i];

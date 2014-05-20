@@ -72,10 +72,9 @@ function Cursor(x, y) {
       this.drawPath(ctx);
     }
     if (!this.recording) {
-      var x = this.getXY().x;
-      var y = this.getXY().y;
-      x = absX(x);
-      y = absY(y);
+      var xy = this.getXY();
+      var x = absX(xy.x);
+      var y = absY(xy.y);
       absDrawImage(ctx, CURSOR, x, y);
     }
   };
