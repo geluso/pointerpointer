@@ -48,7 +48,7 @@ var FOLDER = new Folder();
 
 function resize() {
   WIDTH = $(window).width();
-  HEIGHT = $(window).height() - $("#bar").height();
+  HEIGHT = $(window).height() - $("#controls").height();
   CANVAS.width = WIDTH;
   CANVAS.height = HEIGHT;
 }
@@ -57,7 +57,7 @@ function canvas() {
   CANVAS = document.getElementById("canvas");
   CTX = CANVAS.getContext("2d");
   WIDTH = $(window).width();
-  HEIGHT = $(window).height() - $("#bar").height();
+  HEIGHT = $(window).height() - $("#controls").height();
   FOLDER.x = .5;
   FOLDER.y = .5;
 
@@ -67,7 +67,7 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
-    if (absY(MOUSE_Y) < $("#bar").height()) {
+    if (absY(MOUSE_Y) < $("#controls").height()) {
       return;
     }
     MOUSE_DOWN = true;

@@ -3,7 +3,7 @@ function absX(x) {
 }
 
 function absY(y) {
-  return Math.round(y * (window.innerHeight - $("#bar").height()));
+  return Math.round(y * (window.innerHeight - $("#controls").height()));
 }
 
 function absDrawImage(ctx, img, x, y, width, height) {
