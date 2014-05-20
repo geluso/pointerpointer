@@ -15,33 +15,33 @@ app.controller('Controller', ['$scope', function($scope) {
   };
 
   $scope.loadChutes = function() {
-    $scope.setBackground(CHUTES_AND_LADDERS.background);
-    $scope.background = CHUTES_AND_LADDERS.background;
-    initCursors(CHUTES_AND_LADDERS.cursors);
+    load(CHUTES_AND_LADDERS);
   };
 
   $scope.loadPlinko = function() {
-    $scope.setBackground(PLINKO.background);
-    $scope.background = PLINKO.background;
-    initCursors(PLINKO.cursors);
+    load(PLINKO);
   };
 
   $scope.loadCrosswalk = function() {
-    $scope.setBackground(CROSSWALK.background);
-    $scope.background = CROSSWALK.background;
-    initCursors(CROSSWALK.cursors);
+    load(CROSSWALK);
   };
 
   $scope.merge = function() {
     $scope.background = "";
-    initCursors(CROSSWALK.cursors);
-    appendCursors(CHUTES_AND_LADDERS.cursors);
-    appendCursors(PLINKO.cursors);
+    load(CROSSWALK);
+    appendCursors(CHUTES_AND_LADDERS);
+    appendCursors(PLINKO);
   };
 
-  function initCursors(cursors) {
+  function load(data) {
+    $scope.record = data.record;
+    $scope.permagrab = data.permagrab;
+    $scope.quickSteal = data.quickSteal;
+
+    $scope.setBackground(data.background);
+
     CURSORS = [];
-    appendCursors(cursors);
+    appendCursors(data.cursors);
   }
 
   function appendCursors(cursors) {
@@ -73,7 +73,7 @@ app.controller('Controller', ['$scope', function($scope) {
   });
 
   $scope.setBackground = function(url) {
-    url = url || $scope.background;
+    $scope.background = url;
     var img = createImage(url);
     img.onload = function() {
       BACKGROUND_IMAGE = img;
