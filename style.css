@@ -32,6 +32,15 @@ div {
 
 #controls {
   background-color: #CCCCCC;
+  float: left;
+  width: 10em;
+  height: 100%;
+}
+
+#controls button,
+#controls label {
+  display: block;
+  width: 100%;
 }
 
 label {

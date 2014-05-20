@@ -46,9 +46,13 @@ var FILES_DRAGGING = createImage("img/files_dragging.png");
 
 var FOLDER = new Folder();
 
+function dimensions() {
+  WIDTH = $(window).width() - $("#controls").outerWidth();
+  HEIGHT = $(window).height();
+}
+
 function resize() {
-  WIDTH = $(window).width();
-  HEIGHT = $(window).height() - $("#controls").height();
+  dimensions();
   CANVAS.width = WIDTH;
   CANVAS.height = HEIGHT;
 }
@@ -56,8 +60,7 @@ function resize() {
 function canvas() {
   CANVAS = document.getElementById("canvas");
   CTX = CANVAS.getContext("2d");
-  WIDTH = $(window).width();
-  HEIGHT = $(window).height() - $("#controls").height();
+  dimensions();
   FOLDER.x = .5;
   FOLDER.y = .5;
 
@@ -88,7 +91,8 @@ function canvas() {
   }
 
   window.onmousemove = function(ev) {
-    MOUSE_X = ev.clientX / window.innerWidth;
+    MOUSE_X = (ev.clientX - $("#controls").outerWidth()) / window.innerWidth;
+    MOUSE_X = Math.max(0, MOUSE_X);
     MOUSE_Y = ev.clientY / window.innerHeight;
 
     CTX.beginPath();
