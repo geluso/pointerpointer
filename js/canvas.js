@@ -70,6 +70,9 @@ function canvas() {
   window.onresize = resize;
 
   window.onmousedown = function() {
+    if (MOUSE_X == 0) {
+      return;
+    }
     MOUSE_DOWN = true;
     stopRecording();
 
