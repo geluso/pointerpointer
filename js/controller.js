@@ -9,6 +9,10 @@ app.controller('Controller', ['$scope', function($scope) {
   $scope.quickSteal = true;
 
   $scope.reset = function() {
+    FOLDER.forgetCursor();
+    FOLDER.x = .5;
+    FOLDER.y = .5;
+
     CURSORS = [];
     $scope.background = "";
     BACKGROUND_IMAGE = undefined;
