@@ -35,12 +35,24 @@ div {
   float: left;
   width: 10em;
   height: 100%;
+  position: relative;
 }
 
 #controls button,
 #controls label {
   display: block;
   width: 100%;
+}
+
+#controls a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  left: 0;
 }
 
 label {

@@ -48,6 +48,18 @@ app.controller('Controller', ['$scope', function($scope) {
     appendCursors(data.cursors);
   }
 
+  $scope.save = function() {
+    var json = {
+      record: $scope.record,
+      permagrab: $scope.permagrab,
+      quickSteal: $scope.quickSteal,
+      background: $scope.background,
+      cursors: CURSORS
+    };
+    var str = JSON.prune(json);
+    console.log("save length:", str.length);
+  }
+
   function appendCursors(cursors) {
     for (var i = 0; i < cursors.length; i++) {
       var cursor = new Cursor();
